@@ -9,6 +9,12 @@ import {
     HardHat,
     Upload,
     Image,
+    WalletCards,
+    BookOpen,
+    CircleDollarSign,
+    Truck,
+    Users,
+    AlertCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -39,6 +45,36 @@ const Sidebar = () => {
                 name: "Budget",
                 path: "/budget",
                 icon: Wallet,
+            },
+            {
+                name: "Accounts",
+                path: "/accounts",
+                icon: WalletCards,
+            },
+            {
+                name: "Cash Book",
+                path: "/cash-book",
+                icon: BookOpen,
+            },
+            {
+                name: "Funds",
+                path: "/funds",
+                icon: CircleDollarSign,
+            },
+            {
+                name: "Supplier Payments",
+                path: "/supplier-payments",
+                icon: Truck,
+            },
+            {
+                name: "Labour Payments",
+                path: "/labour-payments",
+                icon: Users,
+            },
+            {
+                name: "Dues",
+                path: "/dues",
+                icon: AlertCircle,
             },
             {
                 name: "Reports",

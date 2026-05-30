@@ -9,6 +9,12 @@ import Settings from "../pages/Settings";
 import UploadProof from "../pages/UploadProof";
 import SiteUploads from "../pages/SiteUploads";
 import Login from "../pages/Login";
+import Accounts from "../pages/Accounts";
+import CashBook from "../pages/CashBook";
+import Funds from "../pages/Funds";
+import SupplierPayments from "../pages/SupplierPayments";
+import LabourPayments from "../pages/LabourPayments";
+import Dues from "../pages/Dues";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 
@@ -67,6 +73,55 @@ const AppRoutes = () => {
                     element={
                         <RoleProtectedRoute allowedRoles={["admin"]}>
                             <Settings />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="accounts"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <Accounts />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="cash-book"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <CashBook />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="funds"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <Funds />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="supplier-payments"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <SupplierPayments />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="labour-payments"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <LabourPayments />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="dues"
+                    element={
+                        <RoleProtectedRoute allowedRoles={["admin"]}>
+                            <Dues />
                         </RoleProtectedRoute>
                     }
                 />
