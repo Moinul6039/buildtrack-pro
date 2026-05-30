@@ -1,94 +1,219 @@
 export const printReport = ({ title, columns = [], rows = [], summary = [] }) => {
-    const printWindow = window.open("", "PRINT", "height=900,width=1200");
+  try {
+    const printWindow = window.open("", "_blank", "width=1000,height=700");
 
-    if (!printWindow) return;
+    if (!printWindow) {
+      alert("Popup blocked. Please allow popups for this site and try again.");
+      return;
+    }
 
-    const generatedDate = new Date().toLocaleString("en-BD", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    const generatedDate = new Date().toLocaleString();
 
-    const summaryRows = summary.map(
-        (item) => `
-            <div class="summary-card">
-                <div class="summary-label">${item.label}</div>
-                <div class="summary-value">${item.value}</div>
-            </div>`
-    ).join("");
+    const normalizeValue = (value) => {
+      if (value === null || value === undefined) return "";
+      return String(value);
+    };
 
-    const headerHtml = `
-        <div class="print-header">
-            <div>
-                <p class="brand">BuildTrack Pro</p>
-                <p class="subtitle">Report Printout</p>
-            </div>
-            <div class="meta">
-                <div><strong>Report:</strong> ${title}</div>
-                <div><strong>Generated:</strong> ${generatedDate}</div>
-            </div>
-        </div>
-    `;
+    const summaryHtml =
+      Array.isArray(summary) && summary.length > 0
+        ? `
+          <div class="summary">
+            ${summary
+              .map(
+                (item) => `
+                  <div class="summary-card">
+                    <p>${normalizeValue(item.label || item.title)}</p>
+                    <h3>${normalizeValue(item.value)}</h3>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        `
+        : "";
 
-    const summaryHtml = summary.length > 0 ? `
-        <div class="summary-grid">
-            ${summaryRows}
-        </div>
-    ` : "";
+    const tableHead = columns
+      .map((column) => `<th>${normalizeValue(column)}</th>`)
+      .join("");
 
-    const tableHeaders = columns.map((column) => `<th>${column}</th>`).join("");
-    const tableRows = rows.map(
-        (row) => `
-            <tr>
-                ${row.map((cell) => `<td>${cell ?? ""}</td>`).join("")}
-            </tr>`
-    ).join("");
+    const tableBody = rows
+      .map((row) => {
+        const rowValues = Array.isArray(row) ? row : Object.values(row);
+
+        return `
+          <tr>
+            ${rowValues
+              .map((cell) => `<td>${normalizeValue(cell)}</td>`)
+              .join("")}
+          </tr>
+        `;
+      })
+      .join("");
 
     const html = `
-        <html>
-            <head>
-                <title>${title} - BuildTrack Pro</title>
-                <style>
-                    body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 24px; color: #0f172a; }
-                    .print-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
-                    .brand { font-size: 28px; font-weight: 700; margin: 0; }
-                    .subtitle { margin: 4px 0 0; color: #475569; font-size: 14px; }
-                    .meta { display: grid; gap: 8px; font-size: 13px; color: #334155; }
-                    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
-                    .summary-card { border: 1px solid #e2e8f0; border-radius: 16px; background: #f8fafc; padding: 14px 16px; }
-                    .summary-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-                    .summary-value { font-size: 18px; font-weight: 700; color: #0f172a; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-                    thead th { text-align: left; padding: 12px 10px; border-bottom: 2px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 12px; letter-spacing: 0.02em; }
-                    tbody td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #334155; }
-                    tbody tr:last-child td { border-bottom: none; }
-                    @media print {
-                        body { margin: 0; }
-                        .print-header, .summary-grid { page-break-inside: avoid; }
-                    }
-                </style>
-            </head>
-            <body>
-                ${headerHtml}
-                ${summaryHtml}
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>${tableHeaders}</tr>
-                        </thead>
-                        <tbody>
-                            ${tableRows}
-                        </tbody>
-                    </table>
-                </div>
-            </body>
-        </html>
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${title || "Report"} - BuildTrack Pro</title>
+          <style>
+            * {
+              box-sizing: border-box;
+            }
+
+            body {
+              font-family: Arial, sans-serif;
+              padding: 30px;
+              color: #0f172a;
+            }
+
+            .header {
+              border-bottom: 2px solid #e2e8f0;
+              padding-bottom: 16px;
+              margin-bottom: 24px;
+            }
+
+            .brand {
+              font-size: 26px;
+              font-weight: 800;
+              margin: 0;
+            }
+
+            .subtitle {
+              font-size: 14px;
+              color: #475569;
+              margin-top: 6px;
+            }
+
+            .report-title {
+              font-size: 20px;
+              font-weight: 700;
+              margin: 20px 0 5px;
+            }
+
+            .date {
+              font-size: 13px;
+              color: #64748b;
+              margin-bottom: 20px;
+            }
+
+            .summary {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 12px;
+              margin-bottom: 24px;
+            }
+
+            .summary-card {
+              border: 1px solid #e2e8f0;
+              border-radius: 10px;
+              padding: 14px;
+              background: #f8fafc;
+            }
+
+            .summary-card p {
+              margin: 0;
+              font-size: 12px;
+              color: #64748b;
+            }
+
+            .summary-card h3 {
+              margin: 8px 0 0;
+              font-size: 20px;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+              font-size: 12px;
+            }
+
+            th {
+              background: #f1f5f9;
+              text-align: left;
+              padding: 10px;
+              border: 1px solid #cbd5e1;
+              font-weight: 700;
+            }
+
+            td {
+              padding: 10px;
+              border: 1px solid #e2e8f0;
+            }
+
+            .footer {
+              margin-top: 40px;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 24px;
+              text-align: center;
+              font-size: 13px;
+            }
+
+            .signature {
+              border-top: 1px solid #0f172a;
+              padding-top: 8px;
+            }
+
+            @media print {
+              button {
+                display: none;
+              }
+
+              body {
+                padding: 20px;
+              }
+            }
+          </style>
+        </head>
+
+        <body>
+          <div class="header">
+            <h1 class="brand">BuildTrack Pro</h1>
+            <div class="subtitle">Construction Management System</div>
+          </div>
+
+          <h2 class="report-title">${title || "Report"}</h2>
+          <div class="date">Generated Date: ${generatedDate}</div>
+
+          ${summaryHtml}
+
+          <table>
+            <thead>
+              <tr>${tableHead}</tr>
+            </thead>
+            <tbody>
+              ${
+                rows.length > 0
+                  ? tableBody
+                  : `<tr><td colspan="${columns.length || 1}">No data found</td></tr>`
+              }
+            </tbody>
+          </table>
+
+          <div class="footer">
+            <div class="signature">Prepared By</div>
+            <div class="signature">Checked By</div>
+            <div class="signature">Approved By</div>
+          </div>
+
+          <script>
+            window.onload = function () {
+              setTimeout(function () {
+                window.focus();
+                window.print();
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
     `;
 
+    printWindow.document.open();
     printWindow.document.write(html);
     printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+  } catch (error) {
+    console.error("Print report failed:", error);
+    alert("Print failed. Please check browser console.");
+  }
 };

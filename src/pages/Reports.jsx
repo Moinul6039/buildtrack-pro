@@ -138,6 +138,11 @@ const Reports = () => {
     };
 
     const handlePrint = () => {
+        if (!report || !Array.isArray(report.columns) || !Array.isArray(report.rows)) {
+            alert("Please generate a report first.");
+            return;
+        }
+
         printReport({
             title: report.title,
             columns: report.columns,
@@ -249,7 +254,7 @@ const Reports = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    <Button onClick={handlePrint} className="flex items-center gap-2 bg-slate-700 hover:bg-slate-800">
+                    <Button type="button" onClick={handlePrint} className="flex items-center gap-2 bg-slate-700 hover:bg-slate-800">
                         <Printer size={16} />
                         Print
                     </Button>
