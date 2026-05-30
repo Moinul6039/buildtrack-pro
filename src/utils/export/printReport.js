@@ -1,56 +1,56 @@
 export const printReport = ({ title, columns = [], rows = [], summary = [] }) => {
-  try {
-    const printWindow = window.open("", "_blank", "width=1000,height=700");
+    try {
+        const printWindow = window.open("", "_blank", "width=1000,height=700");
 
-    if (!printWindow) {
-      alert("Popup blocked. Please allow popups for this site and try again.");
-      return;
-    }
+        if (!printWindow) {
+            alert("Popup blocked. Please allow popups for this site and try again.");
+            return;
+        }
 
-    const generatedDate = new Date().toLocaleString();
+        const generatedDate = new Date().toLocaleString();
 
-    const normalizeValue = (value) => {
-      if (value === null || value === undefined) return "";
-      return String(value);
-    };
+        const normalizeValue = (value) => {
+            if (value === null || value === undefined) return "";
+            return String(value);
+        };
 
-    const summaryHtml =
-      Array.isArray(summary) && summary.length > 0
-        ? `
+        const summaryHtml =
+            Array.isArray(summary) && summary.length > 0
+                ? `
           <div class="summary">
             ${summary
-              .map(
-                (item) => `
+                    .map(
+                        (item) => `
                   <div class="summary-card">
                     <p>${normalizeValue(item.label || item.title)}</p>
                     <h3>${normalizeValue(item.value)}</h3>
                   </div>
                 `
-              )
-              .join("")}
+                    )
+                    .join("")}
           </div>
         `
-        : "";
+                : "";
 
-    const tableHead = columns
-      .map((column) => `<th>${normalizeValue(column)}</th>`)
-      .join("");
+        const tableHead = columns
+            .map((column) => `<th>${normalizeValue(column)}</th>`)
+            .join("");
 
-    const tableBody = rows
-      .map((row) => {
-        const rowValues = Array.isArray(row) ? row : Object.values(row);
+        const tableBody = rows
+            .map((row) => {
+                const rowValues = Array.isArray(row) ? row : Object.values(row);
 
-        return `
+                return `
           <tr>
             ${rowValues
-              .map((cell) => `<td>${normalizeValue(cell)}</td>`)
-              .join("")}
+                        .map((cell) => `<td>${normalizeValue(cell)}</td>`)
+                        .join("")}
           </tr>
         `;
-      })
-      .join("");
+            })
+            .join("");
 
-    const html = `
+        const html = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -183,11 +183,10 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
               <tr>${tableHead}</tr>
             </thead>
             <tbody>
-              ${
-                rows.length > 0
-                  ? tableBody
-                  : `<tr><td colspan="${columns.length || 1}">No data found</td></tr>`
-              }
+              ${rows.length > 0
+                ? tableBody
+                : `<tr><td colspan="${columns.length || 1}">No data found</td></tr>`
+            }
             </tbody>
           </table>
 
@@ -209,11 +208,11 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
       </html>
     `;
 
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close();
-  } catch (error) {
-    console.error("Print report failed:", error);
-    alert("Print failed. Please check browser console.");
-  }
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+    } catch (error) {
+        console.error("Print report failed:", error);
+        alert("Print failed. Please check browser console.");
+    }
 };

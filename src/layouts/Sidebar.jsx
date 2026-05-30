@@ -1,150 +1,126 @@
 import { NavLink } from "react-router-dom";
 import {
-    LayoutDashboard,
-    Package,
-    ReceiptText,
-    FileText,
-    Wallet,
-    Settings,
-    HardHat,
-    Upload,
-    Image,
-    WalletCards,
-    BookOpen,
-    CircleDollarSign,
-    Truck,
-    Users,
-    AlertCircle,
+  AlertCircle,
+  BarChart3,
+  BookOpen,
+  CircleDollarSign,
+  DatabaseBackup,
+  FileText,
+  ImageUp,
+  LayoutDashboard,
+  Package,
+  ReceiptText,
+  Settings,
+  Truck,
+  Users,
+  Wallet,
+  X,
+  FolderOpen,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-const Sidebar = () => {
-    const { currentUser, isAdmin, isSiteEngineer } = useAuth();
+const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
+  const { currentUser, isAdmin, isSiteEngineer } = useAuth();
 
-    const menuItems = [
-        {
-            name: "Dashboard",
-            path: "/dashboard",
-            icon: LayoutDashboard,
-        },
-        {
-            name: "Materials",
-            path: "/materials",
-            icon: Package,
-        },
-        {
-            name: "Expenses",
-            path: "/expenses",
-            icon: ReceiptText,
-        },
-    ];
+  const adminMenus = [
+    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Materials", path: "/materials", icon: Package },
+    { name: "Expenses", path: "/expenses", icon: ReceiptText },
+    { name: "Budget", path: "/budget", icon: Wallet },
+    { name: "Accounts", path: "/accounts", icon: BarChart3 },
+    { name: "Cash Book", path: "/cash-book", icon: BookOpen },
+    { name: "Funds", path: "/funds", icon: CircleDollarSign },
+    { name: "Supplier Payments", path: "/supplier-payments", icon: Truck },
+    { name: "Labour Payments", path: "/labour-payments", icon: Users },
+    { name: "Dues", path: "/dues", icon: AlertCircle },
+    { name: "Reports", path: "/reports", icon: FileText },
+    { name: "Site Uploads", path: "/site-uploads", icon: FolderOpen },
+    { name: "Settings", path: "/settings", icon: Settings },
+    { name: "Backup & Restore", path: "/backup", icon: DatabaseBackup },
+  ];
 
-    if (isAdmin) {
-        menuItems.push(
-            {
-                name: "Budget",
-                path: "/budget",
-                icon: Wallet,
-            },
-            {
-                name: "Accounts",
-                path: "/accounts",
-                icon: WalletCards,
-            },
-            {
-                name: "Cash Book",
-                path: "/cash-book",
-                icon: BookOpen,
-            },
-            {
-                name: "Funds",
-                path: "/funds",
-                icon: CircleDollarSign,
-            },
-            {
-                name: "Supplier Payments",
-                path: "/supplier-payments",
-                icon: Truck,
-            },
-            {
-                name: "Labour Payments",
-                path: "/labour-payments",
-                icon: Users,
-            },
-            {
-                name: "Dues",
-                path: "/dues",
-                icon: AlertCircle,
-            },
-            {
-                name: "Reports",
-                path: "/reports",
-                icon: FileText,
-            },
-            {
-                name: "Site Uploads",
-                path: "/site-uploads",
-                icon: Image,
-            },
-            {
-                name: "Settings",
-                path: "/settings",
-                icon: Settings,
-            }
-        );
-    }
+  const engineerMenus = [
+    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Materials", path: "/materials", icon: Package },
+    { name: "Expenses", path: "/expenses", icon: ReceiptText },
+    { name: "Upload Proof", path: "/upload-proof", icon: ImageUp },
+  ];
 
-    if (isSiteEngineer) {
-        menuItems.push({
-            name: "Upload Proof",
-            path: "/upload-proof",
-            icon: Upload,
-        });
-    }
+  const menus = isAdmin ? adminMenus : isSiteEngineer ? engineerMenus : [];
 
-    return (
-        <aside className="fixed left-0 top-0 z-40 hidden h-screen w-72 bg-slate-950 text-white md:block">
-            <div className="flex h-20 items-center gap-3 border-b border-slate-800 px-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600">
-                    <HardHat size={24} />
-                </div>
+  return (
+    <>
+      {isOpen && (
+        <button
+          type="button"
+          aria-label="Close sidebar overlay"
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-slate-950/50 md:hidden"
+        />
+      )}
 
-                <div>
-                    <h1 className="text-lg font-bold">BuildTrack Pro</h1>
-                    <p className="text-xs text-slate-400">Construction Manager</p>
-                </div>
-            </div>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 transform flex-col bg-slate-950 text-white transition-transform duration-300 md:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex h-20 items-center justify-between border-b border-slate-800 px-6">
+          <div>
+            <h1 className="text-xl font-bold">BuildTrack Pro</h1>
+            <p className="text-xs text-slate-400">Construction Manager</p>
+          </div>
 
-            <nav className="mt-6 space-y-2 px-4">
-                {menuItems.map((item) => {
-                    const Icon = item.icon;
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-2 text-slate-300 hover:bg-slate-800 md:hidden"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
-                    return (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${isActive
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-950/40"
-                                    : "text-slate-300 hover:bg-slate-900 hover:text-white"
-                                }`
-                            }
-                        >
-                            <Icon size={20} />
-                            {item.name}
-                        </NavLink>
-                    );
-                })}
-            </nav>
+        <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-5">
+          {menus.map((item) => {
+            const Icon = item.icon;
 
-            <div className="absolute bottom-6 left-4 right-4 rounded-2xl bg-slate-900 p-4">
-                <p className="text-sm font-semibold text-white">{currentUser?.name || "Guest"}</p>
-                <p className="mt-1 text-xs text-slate-400">
-                    Role: {isAdmin ? "Admin" : isSiteEngineer ? "Site Engineer" : "Guest"}
-                </p>
-            </div>
-        </aside>
-    );
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                    isActive
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-300 hover:bg-slate-900 hover:text-white"
+                  }`
+                }
+              >
+                <Icon size={19} />
+                <span>{item.name}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        <div className="border-t border-slate-800 p-4">
+          <div className="rounded-2xl bg-slate-900 p-4">
+            <p className="text-sm font-bold text-white">
+              {currentUser?.name || "User"}
+            </p>
+            <p className="mt-1 text-xs text-slate-400">
+              Role:{" "}
+              {currentUser?.role === "admin"
+                ? "Admin"
+                : currentUser?.role === "site_engineer"
+                ? "Site Engineer"
+                : "User"}
+            </p>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
 };
 
 export default Sidebar;

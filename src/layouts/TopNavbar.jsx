@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/common/Button";
 
-const TopNavbar = () => {
+const TopNavbar = ({ onMenuClick }) => {
     const { currentUser, logout, isAdmin, isSiteEngineer } = useAuth();
     const navigate = useNavigate();
 
@@ -15,7 +15,11 @@ const TopNavbar = () => {
     return (
         <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-4 md:px-6">
             <div className="flex items-center gap-3">
-                <button className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 md:hidden">
+                <button
+                    type="button"
+                    onClick={onMenuClick}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 md:hidden"
+                >
                     <Menu size={22} />
                 </button>
 
