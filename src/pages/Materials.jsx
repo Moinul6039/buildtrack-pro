@@ -97,16 +97,14 @@ const Materials = () => {
         setMaterials(updatedMaterials);
     };
 
+    
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">
-                        Material Management
-                    </h1>
-                    <p className="mt-1 text-sm text-slate-500">
-                        Add, edit, delete and track construction materials
-                    </p>
+                    <h1 className="text-2xl font-bold text-slate-900">Materials</h1>
+                    <p className="mt-1 text-sm text-slate-500">Manage project materials</p>
                 </div>
 
                 <Button onClick={handleOpenAddModal}>

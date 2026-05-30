@@ -4,7 +4,6 @@ import {
   BarChart3,
   BookOpen,
   CircleDollarSign,
-  DatabaseBackup,
   FileText,
   ImageUp,
   LayoutDashboard,
@@ -36,7 +35,6 @@ const Sidebar = ({ isOpen = false, onClose = () => {} }) => {
     { name: "Reports", path: "/reports", icon: FileText },
     { name: "Site Uploads", path: "/site-uploads", icon: FolderOpen },
     { name: "Settings", path: "/settings", icon: Settings },
-    { name: "Backup & Restore", path: "/backup", icon: DatabaseBackup },
   ];
 
   const engineerMenus = [

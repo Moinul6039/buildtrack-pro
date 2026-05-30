@@ -27,9 +27,7 @@ const TopNavbar = ({ onMenuClick }) => {
                     <h2 className="text-lg font-bold text-slate-900 md:text-xl">
                         Construction Management System
                     </h2>
-                    <p className="text-xs text-slate-500">
-                        Manage materials, expenses and project budget
-                    </p>
+                    <p className="text-xs text-slate-500">Manage materials, expenses and project budget</p>
                 </div>
             </div>
 
@@ -47,7 +45,7 @@ const TopNavbar = ({ onMenuClick }) => {
                     <Bell size={19} />
                 </button>
 
-                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
                     <User size={18} />
                     <div className="text-left leading-tight">
                         <p className="font-semibold text-slate-900">{currentUser?.name || "Guest"}</p>

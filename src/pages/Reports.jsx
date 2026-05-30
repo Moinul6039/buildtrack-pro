@@ -27,20 +27,22 @@ import { exportToPDF } from "../utils/export/exportToPDF";
 import { exportToExcel } from "../utils/export/exportToExcel";
 import { printReport } from "../utils/export/printReport";
 
-const reportOptions = [
-    { value: "material", label: "Material Report" },
-    { value: "expense", label: "Expense Report" },
-    { value: "fund", label: "Fund Received Report" },
-    { value: "cashBook", label: "Cash Book Report" },
-    { value: "supplier", label: "Supplier Payment Report" },
-    { value: "labour", label: "Labour Payment Report" },
-    { value: "due", label: "Due Report" },
-    { value: "budget", label: "Budget Summary Report" },
-];
 
 const statusOptions = ["Paid", "Partial Paid", "Due"];
 
 const Reports = () => {
+    
+    const reportOptions = [
+        { value: "material", label: "Material Report" },
+        { value: "expense", label: "Expense Report" },
+        { value: "fund", label: "Fund Received Report" },
+        { value: "cashBook", label: "Cash Book Report" },
+        { value: "supplier", label: "Supplier Payment Report" },
+        { value: "labour", label: "Labour Payment Report" },
+        { value: "due", label: "Due Report" },
+        { value: "budget", label: "Budget Summary Report" },
+    ];
+
     const [reportType, setReportType] = useState("material");
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
@@ -248,9 +250,7 @@ const Reports = () => {
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <h2 className="text-xl font-semibold text-slate-900">{report.title}</h2>
-                    <p className="text-sm text-slate-500">
-                        {report.rows.length} record{report.rows.length === 1 ? "" : "s"} found.
-                    </p>
+                    <p className="text-sm text-slate-500">{report.rows.length} record{report.rows.length === 1 ? "" : "s"} found.</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">

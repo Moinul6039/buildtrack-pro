@@ -1,4 +1,5 @@
 ﻿import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Banknote,
     Package,
@@ -22,6 +23,7 @@ import {
 } from "../utils/calculateBudget";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
     const materials = useMemo(() => materialService.getMaterials(), []);
     const expenses = useMemo(() => expenseService.getExpenses(), []);
     const budget = useMemo(() => budgetService.getBudget(), []);
@@ -104,17 +106,20 @@ const Dashboard = () => {
             .slice(0, 5);
     }, [materials, expenses]);
 
+    
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="mt-1 text-sm text-slate-500">
-                        Overview of your construction project
-                    </p>
+                    <p className="mt-1 text-sm text-slate-500">Overview of project status and recent activity</p>
                 </div>
 
-                <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+                <button
+                    onClick={() => navigate("/reports")}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+                >
                     View Report
                     <ArrowUpRight size={18} />
                 </button>
@@ -158,12 +163,10 @@ const Dashboard = () => {
                 <Card className="xl:col-span-2">
                     <div className="mb-5 flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-bold text-slate-900">
-                                Material Usage Summary
-                            </h2>
-                            <p className="text-sm text-slate-500">
-                                Top materials by used quantity percentage
-                            </p>
+                                    <h2 className="text-lg font-bold text-slate-900">
+                                        Material Usage Summary
+                                    </h2>
+                                    <p className="text-sm text-slate-500">Top materials by used quantity percentage</p>
                         </div>
                     </div>
 
@@ -241,9 +244,7 @@ const Dashboard = () => {
 
             <Card>
                 <h2 className="text-lg font-bold text-slate-900">Recent Activities</h2>
-                <p className="text-sm text-slate-500">
-                    Latest project updates and transactions
-                </p>
+                <p className="text-sm text-slate-500">Latest project updates and transactions</p>
 
                 <div className="mt-5 divide-y divide-slate-100">
                     {recentActivities.map((activity) => (
