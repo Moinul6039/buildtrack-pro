@@ -125,7 +125,7 @@ const Reports = () => {
             columns: report.columns,
             rows: report.rows,
             summary: report.summary,
-            fileName: `${report.title.replace(/\s+/g, "_")}-${new Date().toISOString().slice(0, 10)}`,
+            fileName: report.title.toLowerCase().replaceAll(" ", "-"),
         });
     };
 
