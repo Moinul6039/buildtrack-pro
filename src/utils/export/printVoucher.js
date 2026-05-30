@@ -1,24 +1,21 @@
 export const printVoucher = (voucherData) => {
-    const {
-        voucherNo,
-        date,
-        type,
-        category,
-        amount,
-        note,
-        preparedBy = "Admin",
-    } = voucherData;
+    try {
+        const {
+            voucherNo,
+            date,
+            type,
+            category,
+            amount,
+            note,
+            preparedBy = "Admin",
+        } = voucherData;
 
-    const printWindow = window.open("", "PRINT", "height=800,width=800");
-
-    if (!printWindow) return;
-
-    printWindow.document.write(`
+        const html = `
         <html>
             <head>
                 <title>Voucher - ${voucherNo}</title>
                 <style>
-                    body { font-family: Arial, sans-serif; margin: 32px; color: #111827; }
+                    body { font-family: Arial, sans-serif; margin: 32px; color: #111827; background: #ffffff; }
                     .page { max-width: 760px; margin: auto; }
                     .header { border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px; }
                     .title { font-size: 24px; font-weight: 700; margin: 0; }
@@ -30,6 +27,9 @@ export const printVoucher = (voucherData) => {
                     .note-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 12px; }
                     .signature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
                     .signature { border-top: 1px solid #cbd5e1; padding-top: 8px; text-align: center; color: #475569; }
+                    @media print {
+                        body { margin: 20px; }
+                    }
                 </style>
             </head>
             <body>
@@ -60,9 +60,48 @@ export const printVoucher = (voucherData) => {
                 </div>
             </body>
         </html>
-    `);
+    `;
 
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+        const iframe = document.createElement("iframe");
+
+        iframe.style.position = "fixed";
+        iframe.style.right = "0";
+        iframe.style.bottom = "0";
+        iframe.style.width = "0";
+        iframe.style.height = "0";
+        iframe.style.border = "0";
+        iframe.style.visibility = "hidden";
+
+        document.body.appendChild(iframe);
+
+        const iframeWindow = iframe.contentWindow;
+        const iframeDocument = iframe.contentDocument || iframeWindow.document;
+
+        iframeDocument.open();
+        iframeDocument.write(html);
+        iframeDocument.close();
+
+        iframe.onload = () => {
+            iframeWindow.focus();
+            iframeWindow.print();
+
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1000);
+        };
+
+        setTimeout(() => {
+            iframeWindow.focus();
+            iframeWindow.print();
+
+            setTimeout(() => {
+                if (document.body.contains(iframe)) {
+                    document.body.removeChild(iframe);
+                }
+            }, 1000);
+        }, 500);
+    } catch (error) {
+        console.error("Print voucher failed:", error);
+        alert("Print failed. Please check browser console.");
+    }
 };

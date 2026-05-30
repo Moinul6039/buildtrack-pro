@@ -1,60 +1,65 @@
 export const printReport = ({ title, columns = [], rows = [], summary = [] }) => {
-    try {
-        const printWindow = window.open("", "_blank", "width=1000,height=700");
+  try {
+    const normalizeValue = (value) => {
+      if (value === null || value === undefined) return "";
+      return String(value);
+    };
 
-        if (!printWindow) {
-            alert("Popup blocked. Please allow popups for this site and try again.");
-            return;
-        }
+    const escapeHtml = (value) => {
+      return normalizeValue(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    };
 
-        const generatedDate = new Date().toLocaleString();
+    const generatedDate = new Date().toLocaleString();
 
-        const normalizeValue = (value) => {
-            if (value === null || value === undefined) return "";
-            return String(value);
-        };
-
-        const summaryHtml =
-            Array.isArray(summary) && summary.length > 0
-                ? `
+    const summaryHtml =
+      Array.isArray(summary) && summary.length > 0
+        ? `
           <div class="summary">
             ${summary
-                    .map(
-                        (item) => `
+              .map(
+                (item) => `
                   <div class="summary-card">
-                    <p>${normalizeValue(item.label || item.title)}</p>
-                    <h3>${normalizeValue(item.value)}</h3>
+                    <p>${escapeHtml(item.label || item.title || "")}</p>
+                    <h3>${escapeHtml(item.value || "")}</h3>
                   </div>
                 `
-                    )
-                    .join("")}
+              )
+              .join("")}
           </div>
         `
-                : "";
+        : "";
 
-        const tableHead = columns
-            .map((column) => `<th>${normalizeValue(column)}</th>`)
-            .join("");
+    const tableHead = columns
+      .map((column) => `<th>${escapeHtml(column)}</th>`)
+      .join("");
 
-        const tableBody = rows
+    const tableBody =
+      rows.length > 0
+        ? rows
             .map((row) => {
-                const rowValues = Array.isArray(row) ? row : Object.values(row);
+              const rowValues = Array.isArray(row) ? row : Object.values(row);
 
-                return `
-          <tr>
-            ${rowValues
-                        .map((cell) => `<td>${normalizeValue(cell)}</td>`)
-                        .join("")}
-          </tr>
-        `;
+              return `
+                <tr>
+                  ${rowValues
+                    .map((cell) => `<td>${escapeHtml(cell)}</td>`)
+                    .join("")}
+                </tr>
+              `;
             })
-            .join("");
+            .join("")
+        : `<tr><td colspan="${columns.length || 1}">No data found</td></tr>`;
 
-        const html = `
+    const html = `
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${title || "Report"} - BuildTrack Pro</title>
+          <title>${escapeHtml(title || "Report")} - BuildTrack Pro</title>
           <style>
             * {
               box-sizing: border-box;
@@ -64,6 +69,7 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
               font-family: Arial, sans-serif;
               padding: 30px;
               color: #0f172a;
+              background: #ffffff;
             }
 
             .header {
@@ -156,10 +162,6 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
             }
 
             @media print {
-              button {
-                display: none;
-              }
-
               body {
                 padding: 20px;
               }
@@ -173,8 +175,8 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
             <div class="subtitle">Construction Management System</div>
           </div>
 
-          <h2 class="report-title">${title || "Report"}</h2>
-          <div class="date">Generated Date: ${generatedDate}</div>
+          <h2 class="report-title">${escapeHtml(title || "Report")}</h2>
+          <div class="date">Generated Date: ${escapeHtml(generatedDate)}</div>
 
           ${summaryHtml}
 
@@ -183,10 +185,7 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
               <tr>${tableHead}</tr>
             </thead>
             <tbody>
-              ${rows.length > 0
-                ? tableBody
-                : `<tr><td colspan="${columns.length || 1}">No data found</td></tr>`
-            }
+              ${tableBody}
             </tbody>
           </table>
 
@@ -195,24 +194,50 @@ export const printReport = ({ title, columns = [], rows = [], summary = [] }) =>
             <div class="signature">Checked By</div>
             <div class="signature">Approved By</div>
           </div>
-
-          <script>
-            window.onload = function () {
-              setTimeout(function () {
-                window.focus();
-                window.print();
-              }, 500);
-            };
-          </script>
         </body>
       </html>
     `;
 
-        printWindow.document.open();
-        printWindow.document.write(html);
-        printWindow.document.close();
-    } catch (error) {
-        console.error("Print report failed:", error);
-        alert("Print failed. Please check browser console.");
-    }
+    const iframe = document.createElement("iframe");
+
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.style.visibility = "hidden";
+
+    document.body.appendChild(iframe);
+
+    const iframeWindow = iframe.contentWindow;
+    const iframeDocument = iframe.contentDocument || iframeWindow.document;
+
+    iframeDocument.open();
+    iframeDocument.write(html);
+    iframeDocument.close();
+
+    iframe.onload = () => {
+      iframeWindow.focus();
+      iframeWindow.print();
+
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+    };
+
+    setTimeout(() => {
+      iframeWindow.focus();
+      iframeWindow.print();
+
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 1000);
+    }, 500);
+  } catch (error) {
+    console.error("Print report failed:", error);
+    alert("Print failed. Please check browser console.");
+  }
 };
